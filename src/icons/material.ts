@@ -6,6 +6,34 @@
 import { ICON_SVG, MATERIAL } from '../generated/icons';
 
 /**
+ * A lookup in one of the theme's name tables. Own properties only: the tables are plain
+ * objects, and a folder called `constructor` or `__proto__` would otherwise read an inherited
+ * member instead of `undefined` — a function where an icon name belongs, which then throws.
+ */
+function lookup(table: Readonly<Record<string, string>>, key: string): string | undefined {
+	return Object.hasOwn(table, key) ? table[key] : undefined;
+}
+
+/**
+ * Folder names the theme leaves unmatched that have an obvious icon among its own — mostly
+ * the singular or plural it does not list (`task` next to its `tasks`). The theme's table
+ * wins wherever it has an entry; these only fill gaps, and only point at the theme's icons.
+ */
+export const EXTRA_FOLDER_NAMES: Readonly<Record<string, string>> = {
+	task: 'folder-tasks',
+	todo: 'folder-tasks',
+	todos: 'folder-tasks',
+	'to-do': 'folder-tasks',
+	worker: 'folder-job',
+	workers: 'folder-job',
+	cron: 'folder-job',
+	cronjobs: 'folder-job',
+	scheduler: 'folder-job',
+	microservice: 'folder-server',
+	microservices: 'folder-server',
+};
+
+/**
  * Picks an icon the way VS Code's Material Icon Theme does: exact file name first
  * (`package.json`, `Dockerfile`), then the longest known extension (`d.ts` before `ts`),
  * then the generic file icon. Matching is case-insensitive. Light themes get the theme's
@@ -13,22 +41,28 @@ import { ICON_SVG, MATERIAL } from '../generated/icons';
  */
 export function fileIconName(fileName: string, light = false): string {
 	const name = fileName.toLowerCase();
-	const byName = (light && MATERIAL.light.fileNames[name]) || MATERIAL.fileNames[name];
+	const byName = (light && lookup(MATERIAL.light.fileNames, name)) || lookup(MATERIAL.fileNames, name);
 	if (byName) return byName;
 
 	for (let dot = name.indexOf('.'); dot !== -1; dot = name.indexOf('.', dot + 1)) {
 		const extension = name.slice(dot + 1);
 		const byExtension =
-			(light && MATERIAL.light.fileExtensions[extension]) || MATERIAL.fileExtensions[extension];
+			(light && lookup(MATERIAL.light.fileExtensions, extension)) ||
+			lookup(MATERIAL.fileExtensions, extension);
 		if (byExtension) return byExtension;
 	}
 	return MATERIAL.file;
 }
 
-/** The theme's icon for a well-known folder name (`src`, `node_modules`…), or `null`. */
+/** The theme's icon for a well-known folder name (`src`, `node_modules`, `task`…), or `null`. */
 export function folderIconByName(folderName: string, light = false): string | null {
 	const name = folderName.toLowerCase();
-	return (light && MATERIAL.light.folderNames[name]) || MATERIAL.folderNames[name] || null;
+	return (
+		(light && lookup(MATERIAL.light.folderNames, name)) ||
+		lookup(MATERIAL.folderNames, name) ||
+		lookup(EXTRA_FOLDER_NAMES, name) ||
+		null
+	);
 }
 
 export const DEFAULT_FOLDER_ICON = MATERIAL.folder;

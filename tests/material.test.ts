@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	DEFAULT_FOLDER_ICON,
+	EXTRA_FOLDER_NAMES,
 	FILE_ICONS,
 	fileIconLabel,
 	FOLDER_ICONS,
@@ -37,6 +38,27 @@ describe('material icon resolution', () => {
 		expect(folderIconByName('SRC')).toBe('folder-src');
 		expect(folderIconByName('node_modules')).toBe('folder-node');
 		expect(folderIconByName('my-random-folder')).toBeNull();
+	});
+
+	it('fills gaps in the theme without overriding it', () => {
+		expect(folderIconByName('Task')).toBe('folder-tasks');
+		expect(folderIconByName('tasks')).toBe('folder-tasks');
+		expect(folderIconByName('Workers')).toBe('folder-job');
+		// The theme's own answer stands.
+		expect(folderIconByName('Service')).toBe('folder-controller');
+		for (const [name, icon] of Object.entries(EXTRA_FOLDER_NAMES)) {
+			expect(isFolderIcon(icon), `${name} -> ${icon}`).toBe(true);
+			expect(folderIconByName(name)).toBe(icon);
+		}
+	});
+
+	it('never reads an inherited member as an icon name', () => {
+		for (const name of ['constructor', '__proto__', 'toString', 'hasOwnProperty']) {
+			expect(folderIconByName(name)).toBeNull();
+			expect(folderIconByName(name, true)).toBeNull();
+			expect(fileIconName(name)).toBe('file');
+			expect(fileIconName(`notes.${name}`)).toBe('file');
+		}
 		expect(FOLDER_ICONS.length).toBeGreaterThan(100);
 		expect(FOLDER_ICONS.every((name) => !name.endsWith('-open'))).toBe(true);
 		expect(FOLDER_ICONS.every((name) => !name.endsWith('_light'))).toBe(true);

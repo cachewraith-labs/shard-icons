@@ -13,8 +13,9 @@ Right-click a file → **Change icon…** to pick any of the theme's file icons 
 `python`, `markdown`, …) for that one file.
 
 Folders you have not touched can be matched automatically: `src`, `docs`, `images`, `.github`
-and a few thousand other names get the icon the theme would give them. Files can do the same,
-by name and extension, if you turn that on; an icon you chose yourself always wins.
+and a few thousand other names get the icon the theme would give them, plus a handful the
+theme misses (`task`, `todo`, `workers`, `microservices`…) matched to its own icons. Files can
+do the same, by name and extension, if you turn that on; an icon you chose yourself always wins.
 
 The ids are the same ones [cachewraith-explorer](https://github.com/cachewraith-labs/cachewraith-explorer)
 stores, so a folder looks the same in both.

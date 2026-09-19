@@ -26,6 +26,17 @@ describe('planForFolder', () => {
 		});
 	});
 
+	it('does not trip over a folder named after an object member', () => {
+		for (const name of ['constructor', '__proto__']) {
+			expect(() => planForFolder(`Notes/${name}`, {}, settings, false)).not.toThrow();
+			expect(planForFolder(`Notes/${name}`, {}, settings, false)).toBeNull();
+		}
+	});
+
+	it('matches a Task folder to the tasks icon', () => {
+		expect(planForFolder('Work/Task', {}, settings, false)).toMatchObject({ key: 'folder:folder-tasks' });
+	});
+
 	it('shows a plain folder for an id it cannot draw, instead of nothing', () => {
 		expect(planForFolder('src', { src: 'logo-from-the-future' }, settings, false)).toMatchObject({
 			key: 'folder:folder',
