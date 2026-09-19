@@ -1,6 +1,6 @@
 {
   "name": "shard-icons",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Folder and file icons for the Obsidian file explorer, in the Material Icon Theme style.",
   "main": "main.js",
   "type": "module",
