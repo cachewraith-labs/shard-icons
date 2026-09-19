@@ -45,7 +45,6 @@ export interface IconCatalog<T extends IconChoice> {
 const FOLDER_TABS: { group: FolderIconGroup; label: string; hint: string }[] = [
 	{ group: 'theme', label: 'Folders', hint: 'src, images, music…' },
 	{ group: 'logo', label: 'Logos', hint: 'fastapi, laravel, godot…' },
-	{ group: 'symbol', label: 'Symbols', hint: 'game, document, money…' },
 ];
 
 export const FOLDER_CATALOG: IconCatalog<FolderIcon> = {

@@ -89,7 +89,7 @@ export class ShardIconsSettingTab extends PluginSettingTab {
 			cls: 'shard-settings-credit',
 			text:
 				`Icons from Material Icon Theme ${SOURCES.materialIconTheme} (MIT) ` +
-				`and Simple Icons ${SOURCES.simpleIcons} (CC0-1.0). Symbols use Obsidian's built-in Lucide icons.`,
+				`and Simple Icons ${SOURCES.simpleIcons} (CC0-1.0).`,
 		});
 	}
 }

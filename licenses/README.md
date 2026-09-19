@@ -6,7 +6,6 @@ The icons bundled into `main.js` are not this plugin's own work.
 | ---------------------------------------------------------------------------------------- | -------------------------------- | ------- | -------------------------------------------------------------------- |
 | [Material Icon Theme](https://github.com/material-extensions/vscode-material-icon-theme) | `material-icon-theme`            | MIT     | [`material-icon-theme-LICENSE.txt`](material-icon-theme-LICENSE.txt) |
 | [Simple Icons](https://github.com/simple-icons/simple-icons)                             | `simple-icons`                   | CC0-1.0 | [`simple-icons-LICENSE.md`](simple-icons-LICENSE.md)                 |
-| [Lucide](https://lucide.dev)                                                             | shipped by Obsidian, not bundled | ISC     | —                                                                    |
 
 `scripts/build-icons.ts` copies the two notice files here from `node_modules` on every build,
 so they always match the versions the icons came from. The brand-logo folders are drawn by

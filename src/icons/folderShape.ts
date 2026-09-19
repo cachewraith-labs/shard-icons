@@ -1,6 +1,5 @@
-// The Material Icon Theme's folder shape and color rules, shared by the build-time logo
-// folders (`scripts/build-icons.ts`) and the runtime symbol folders, so both look like the
-// theme's own `folder-docker`, `folder-python`… icons: a colored folder in a 16x16 box with
+// The Material Icon Theme's folder shape and color rules, used by the build-time logo
+// folders (`scripts/build-icons.ts`) so they look like the theme's own `folder-docker`, `folder-python`… icons: a colored folder in a 16x16 box with
 // a large emblem ("motive") over its lower right.
 //
 // Pattern: plain pure functions over hex strings. There is one shape and one color rule, so
@@ -45,25 +44,4 @@ export function folderColors(brandHex: string): { folder: string; motive: string
 	if (light < 0.2 || light > 0.92) return { folder: '#546e7a', motive: '#cfd8dc' };
 	if (light > 0.7) return { folder: brand, motive: mix(brand, 0, 0.62) };
 	return { folder: brand, motive: mix(brand, 255, 0.7) };
-}
-
-/** Material Icon Theme folder colors (its 600 shades), one per symbol by name. */
-const SYMBOL_COLORS = [
-	'#e53935',
-	'#d81b60',
-	'#8e24aa',
-	'#5e35b1',
-	'#3949ab',
-	'#1e88e5',
-	'#00897b',
-	'#43a047',
-	'#f4511e',
-	'#6d4c41',
-];
-
-/** Stable per-symbol color, so `symbol-game` always looks the same. */
-export function symbolColor(id: string): string {
-	let hash = 0;
-	for (const char of id) hash = (hash * 31 + char.charCodeAt(0)) | 0;
-	return SYMBOL_COLORS[Math.abs(hash) % SYMBOL_COLORS.length] ?? '#1e88e5';
 }

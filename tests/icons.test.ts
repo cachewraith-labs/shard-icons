@@ -10,7 +10,7 @@ import {
 } from '../src/icons/icons';
 
 describe('custom folder icons', () => {
-	it('parses theme folders, logos and symbols', () => {
+	it('parses theme folders and logos', () => {
 		expect(parseFolderIcon('folder-src')).toMatchObject({ kind: 'theme', name: 'folder-src' });
 		expect(parseFolderIcon('logo-fastapi')).toMatchObject({
 			kind: 'logo',
@@ -18,14 +18,14 @@ describe('custom folder icons', () => {
 			slug: 'fastapi',
 		});
 		expect(parseFolderIcon('logo-laravel')).toMatchObject({ kind: 'logo', label: 'Laravel' });
-		expect(parseFolderIcon('symbol-game')).toMatchObject({ kind: 'symbol', label: 'game' });
 	});
 
 	it('ignores ids this build does not know', () => {
 		for (const unknown of [
 			'logo-nope',
+			// Symbols were removed; a stored one must not parse any more.
+			'symbol-game',
 			'symbol-nope',
-			'symbol-toString',
 			'logo-constructor',
 			'rust',
 			'',
@@ -38,9 +38,7 @@ describe('custom folder icons', () => {
 	it('groups and searches every choice', () => {
 		expect(FOLDER_ICON_GROUPS.theme.length).toBeGreaterThan(100);
 		expect(FOLDER_ICON_GROUPS.logo.length).toBeGreaterThan(100);
-		expect(FOLDER_ICON_GROUPS.symbol.length).toBeGreaterThan(50);
 		expect(folderIconGroup('logo-django')).toBe('logo');
-		expect(folderIconGroup('symbol-game')).toBe('symbol');
 		expect(folderIconGroup('folder-docs')).toBe('theme');
 	});
 

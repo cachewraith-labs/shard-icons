@@ -86,16 +86,10 @@ describe('decorateTitle', () => {
 		expect(row.classList.contains('shard-has-icon')).toBe(false);
 	});
 
-	it('draws a symbol folder from Obsidian’s Lucide icons', () => {
+	it('shows a plain folder for a symbol icon from an earlier version', () => {
 		const row = folderRow('Games');
 		decorateTitle(row, context({ icons: { Games: 'symbol-game' } }));
-		expect(row.querySelector('.shard-icon svg path')).not.toBeNull();
-	});
-
-	it('leaves no host behind when the glyph is missing', () => {
-		const row = folderRow('Money');
-		decorateTitle(row, context({ icons: { Money: 'symbol-money' } }));
-		expect(row.querySelector('.shard-icon')).toBeNull();
+		expect(row.querySelector('.shard-icon')?.getAttribute('data-shard-icon')).toBe('folder:folder');
 	});
 
 	it('never puts markup from the store into the DOM', () => {

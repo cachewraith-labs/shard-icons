@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { folderColors, symbolColor } from '../src/icons/folderShape';
+import { folderColors } from '../src/icons/folderShape';
 
 describe('folder colors', () => {
 	it('keeps a mid-tone brand and pales the emblem', () => {
@@ -23,10 +23,5 @@ describe('folder colors', () => {
 
 	it('accepts a hex with or without the hash', () => {
 		expect(folderColors('039be5')).toEqual(folderColors('#039be5'));
-	});
-
-	it('gives a symbol the same color every time', () => {
-		expect(symbolColor('game')).toBe(symbolColor('game'));
-		expect(symbolColor('game')).toMatch(/^#[0-9a-f]{6}$/);
 	});
 });

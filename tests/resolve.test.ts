@@ -21,8 +21,8 @@ describe('planForFolder', () => {
 	it('draws nothing by name when automatic icons are off', () => {
 		expect(planForFolder('src', {}, off, false)).toBeNull();
 		// A chosen icon is still honoured.
-		expect(planForFolder('src', { src: 'symbol-game' }, off, false)).toMatchObject({
-			key: 'folder:symbol-game',
+		expect(planForFolder('src', { src: 'logo-rust' }, off, false)).toMatchObject({
+			key: 'folder:logo-rust',
 		});
 	});
 
