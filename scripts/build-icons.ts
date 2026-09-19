@@ -1,10 +1,10 @@
-// Generates `src/generated/icons.ts` from the `material-icon-theme` (MIT) and `simple-icons`
-// (CC0) packages in node_modules.
+// Generates `src/generated/icons.ts` from the `material-icon-theme` (MIT), `simple-icons` (CC0)
+// and `@mdi/svg` (Apache-2.0) packages in node_modules.
 //
 // An Obsidian plugin ships as one `main.js`, so there is no server and no lazy asset loading:
 // every icon the plugin can draw has to be in the bundle. This script is the only place that
 // reads node_modules, and it emits exactly what the plugin uses — folder icons always, file
-// icons when they are built in, and the curated brand-logo folders it draws itself.
+// icons when they are built in, and the curated brand-logo and topic folders it draws itself.
 //
 // Node runs this file directly with its built-in type stripping, so this file and everything
 // it imports must stay erasable: no parameter properties, enums or namespaces.
@@ -100,13 +100,139 @@ const SLUGS = [
 	'obsstudio', 'audacity', 'davinciresolve', 'krita', 'netflix', 'soundcloud', 'reddit', 'x', 'mastodon',
 	'bluesky', 'instagram', 'facebook', 'tiktok',
 	// Games
-	'riotgames', 'gogdotcom', 'battledotnet', 'ea', 'ubisoft',
+	'riotgames', 'gogdotcom', 'battledotnet', 'ea', 'ubisoft', 'counterstrike', 'dota2', 'leagueoflegends',
+	'valorant', 'fortnite', 'pubg', 'osu', 'chessdotcom', 'lichess', 'dungeonsanddragons',
+	'foundryvirtualtabletop', 'sega', 'atari', 'squareenix', 'rockstargames', 'gameloft', 'humblebundle',
+	'gamejolt', 'heroicgameslauncher', 'lutris', 'steamdb', 'protondb', 'pcgamingwiki', 'retroachievements',
+	'retroarch', 'retropie', 'dolphin', 'curseforge', 'modrinth', 'spigotmc', 'pterodactyl', 'gamebanana',
+	'blockbench', 'robloxstudio', 'teamspeak', 'mumble', 'streamlabs', 'youtubegaming', 'eslgaming', 'faceit',
+	'g2', 'republicofgamers', 'wine',
+	// Game development
+	'gamemaker', 'construct3', 'monogame', 'raylib', 'bevy', 'aseprite', 'wwise', 'spine',
 	// Hardware and home lab
 	'esphome', 'espressif', 'stmicroelectronics', 'qualcomm', 'proxmox', 'truenas',
 	'pihole', 'openwrt', 'tailscale', 'wireguard',
 	// Storage, passwords and notes
 	'googledrive', 'dropbox', 'nextcloud', 'bitwarden', '1password', 'keepassxc', 'zotero', 'anki', 'logseq',
 	'excalidraw',
+];
+
+/**
+ * Everyday topics — education, work, money… — the theme has no folders for, drawn the same
+ * way as the logos: a Material Design Icons glyph as the emblem on a folder in the topic's
+ * color (the theme's own 600 shades). Only the solid glyphs; outline variants are too thin to
+ * read as an emblem, which is what made the Lucide symbol folders look wrong.
+ */
+const TOPICS: { topic: string; color: string; icons: string[] }[] = [
+	{
+		topic: 'Education',
+		color: '#1e88e5',
+		// prettier-ignore
+		icons: [
+			'school', 'book-education', 'book-open-page-variant', 'bookshelf', 'library', 'notebook',
+			'pencil', 'calculator-variant', 'abacus', 'flask', 'microscope', 'atom', 'math-compass',
+			'translate', 'certificate', 'head-lightbulb', 'brain', 'earth', 'alphabetical-variant',
+			'human-male-board',
+		],
+	},
+	{
+		topic: 'Work',
+		color: '#3949ab',
+		// prettier-ignore
+		icons: [
+			'briefcase', 'office-building', 'account-tie', 'handshake', 'presentation', 'chart-line',
+			'chart-pie', 'clipboard-check', 'sitemap', 'domain', 'gavel', 'scale-balance', 'badge-account',
+			'printer', 'file-document', 'target', 'rocket-launch', 'trophy', 'medal', 'account-group',
+		],
+	},
+	{
+		topic: 'Money',
+		color: '#43a047',
+		// prettier-ignore
+		icons: [
+			'cash', 'cash-multiple', 'bank', 'credit-card', 'wallet', 'piggy-bank', 'currency-usd',
+			'currency-eur', 'chart-areaspline', 'receipt', 'invoice-text', 'finance', 'safe', 'gold',
+			'hand-coin', 'sale', 'tag',
+		],
+	},
+	{
+		topic: 'Health and fitness',
+		color: '#e53935',
+		// prettier-ignore
+		icons: [
+			'heart-pulse', 'hospital-box', 'medical-bag', 'pill', 'stethoscope', 'tooth', 'dumbbell', 'run',
+			'bike', 'yoga', 'meditation', 'weight-lifter', 'sleep', 'bandage', 'needle', 'virus',
+		],
+	},
+	{
+		topic: 'Home and family',
+		color: '#fb8c00',
+		// prettier-ignore
+		icons: [
+			'home', 'home-heart', 'sofa', 'bed', 'account-child', 'baby-carriage',
+			'human-male-female-child', 'dog', 'cat', 'paw', 'sprout', 'hammer-wrench', 'lightbulb',
+			'washing-machine', 'key', 'gift', 'cake-variant', 'party-popper',
+		],
+	},
+	{
+		topic: 'Food and drink',
+		color: '#f4511e',
+		// prettier-ignore
+		icons: [
+			'food', 'silverware-fork-knife', 'chef-hat', 'coffee', 'pizza', 'hamburger', 'noodles',
+			'fruit-cherries', 'carrot', 'cupcake', 'glass-wine', 'beer', 'grill', 'food-apple',
+		],
+	},
+	{
+		topic: 'Travel',
+		color: '#00897b',
+		// prettier-ignore
+		icons: [
+			'airplane', 'car', 'bus', 'train', 'ferry', 'map', 'map-marker', 'compass', 'passport',
+			'bag-suitcase', 'beach', 'tent', 'image-filter-hdr', 'island', 'hiking', 'city', 'bridge',
+			'ticket',
+		],
+	},
+	{
+		topic: 'Hobbies and media',
+		color: '#8e24aa',
+		// prettier-ignore
+		icons: [
+			'music', 'guitar-electric', 'piano', 'headphones', 'microphone', 'movie-open', 'television',
+			'camera', 'palette', 'brush', 'draw', 'puzzle', 'chess-knight', 'cards-playing',
+			'dice-multiple', 'gamepad-variant', 'controller-classic', 'feather', 'fountain-pen-tip',
+			'script-text', 'star', 'heart', 'emoticon-happy',
+		],
+	},
+	{
+		topic: 'Nature and science',
+		color: '#7cb342',
+		// prettier-ignore
+		icons: [
+			'leaf', 'tree', 'flower', 'weather-sunny', 'weather-night', 'snowflake', 'fire', 'water',
+			'rocket', 'telescope', 'orbit', 'fish', 'bird', 'butterfly', 'mushroom', 'cactus',
+		],
+	},
+	{
+		topic: 'Planning and personal',
+		color: '#6d4c41',
+		// prettier-ignore
+		icons: [
+			'calendar', 'calendar-month', 'calendar-today', 'alarm', 'bell', 'checkbox-marked',
+			'format-list-checks', 'flag', 'bookmark', 'pin', 'bullseye-arrow', 'notebook-edit', 'note-text',
+			'inbox', 'archive', 'lock', 'shield', 'account', 'account-heart', 'chat', 'forum', 'email',
+			'phone',
+		],
+	},
+	{
+		topic: 'Devices and tech',
+		color: '#546e7a',
+		// prettier-ignore
+		icons: [
+			'laptop', 'cellphone', 'monitor', 'server', 'wifi', 'cloud', 'database', 'code-braces', 'robot',
+			'shield-lock', 'keyboard', 'console',
+		],
+	},
 ];
 
 interface Manifest {
@@ -141,10 +267,15 @@ function minify(svg: string): string {
 		.trim();
 }
 
-/** A Material-style folder with a Simple Icons logo's single 24x24 path as its emblem. */
-function logoFolderSvg(logoSvg: string, hex: string): string {
-	const d = /<path d="([^"]+)"/.exec(logoSvg)?.[1];
-	if (!d) throw new Error('build-icons: expected a single-path Simple Icons SVG');
+/**
+ * A Material-style folder with a single-path 24x24 glyph as its emblem — a Simple Icons logo or
+ * a Material Design Icons symbol. Only the path data is kept, and the pattern cannot capture a
+ * quote, so nothing from the package can add attributes or elements to the output.
+ */
+function emblemFolderSvg(glyphSvg: string, hex: string): string {
+	const paths = glyphSvg.match(/<path\b/g) ?? [];
+	const d = /<path d="([^"]+)"/.exec(glyphSvg)?.[1];
+	if (paths.length !== 1 || !d) throw new Error('build-icons: expected a single-path 24x24 SVG');
 	const { folder, motive } = folderColors(hex);
 	const { x, y, size } = MOTIVE_BOX;
 	return (
@@ -238,7 +369,7 @@ function buildLogos() {
 		const icon = bySlug.get(slug);
 		if (!icon) throw new Error(`build-icons: simple-icons has no "${slug}"`);
 		logos.push({ slug, title: icon.title });
-		svg[slug] = logoFolderSvg(readFileSync(path.join(dir, 'icons', `${slug}.svg`), 'utf8'), icon.hex);
+		svg[slug] = emblemFolderSvg(readFileSync(path.join(dir, 'icons', `${slug}.svg`), 'utf8'), icon.hex);
 	}
 	return {
 		logos,
@@ -248,11 +379,48 @@ function buildLogos() {
 	};
 }
 
+interface MdiMeta {
+	name: string;
+	aliases: string[];
+	tags: string[];
+	deprecated: boolean;
+}
+
+function buildTopics() {
+	const dir = path.dirname(require.resolve('@mdi/svg/package.json'));
+	const meta = new Map(
+		(JSON.parse(readFileSync(path.join(dir, 'meta.json'), 'utf8')) as MdiMeta[]).map((m) => [m.name, m]),
+	);
+
+	const topics: { name: string; topic: string; terms: string }[] = [];
+	const svg: Record<string, string> = {};
+	for (const { topic, color, icons } of TOPICS) {
+		for (const name of icons) {
+			const info = meta.get(name);
+			if (!info) throw new Error(`build-icons: @mdi/svg has no "${name}"`);
+			if (info.deprecated) throw new Error(`build-icons: @mdi/svg marks "${name}" deprecated`);
+			if (Object.hasOwn(svg, name)) throw new Error(`build-icons: topic icon "${name}" listed twice`);
+			// Aliases and tags make `education` find `school`, `money` find `cash`, and so on.
+			const terms = [topic, ...info.aliases, ...info.tags].join(' ').toLowerCase();
+			topics.push({ name, topic, terms });
+			svg[name] = emblemFolderSvg(readFileSync(path.join(dir, 'svg', `${name}.svg`), 'utf8'), color);
+		}
+	}
+	return {
+		topics,
+		svg,
+		version: packageVersion(dir),
+		license: readFileSync(path.join(dir, 'LICENSE'), 'utf8'),
+	};
+}
+
 const material = buildMaterial();
 const logos = buildLogos();
+const topics = buildTopics();
 
 const source = `// GENERATED by scripts/build-icons.ts — do not edit, and do not commit.
-// Material Icon Theme ${material.version} (MIT) and Simple Icons ${logos.version} (CC0-1.0).
+// Material Icon Theme ${material.version} (MIT), Simple Icons ${logos.version} (CC0-1.0) and
+// Material Design Icons ${topics.version} (Apache-2.0).
 // See licenses/ for the notices these icons ship under.
 
 export interface MaterialTable {
@@ -280,6 +448,15 @@ export interface BrandLogo {
 	readonly title: string;
 }
 
+export interface Topic {
+	/** The Material Design Icons name, which is also the id after \`topic-\`. */
+	readonly name: string;
+	/** The group it is listed under: Education, Work, Money… */
+	readonly topic: string;
+	/** Extra search words: the group, and the icon's aliases and tags upstream. */
+	readonly terms: string;
+}
+
 export const MATERIAL: MaterialTable = ${JSON.stringify(material.table)};
 
 /** SVG key -> markup. The only SVG source the plugin ever renders. */
@@ -290,11 +467,17 @@ export const LOGOS: readonly BrandLogo[] = ${JSON.stringify(logos.logos)};
 /** Logo slug -> a Material-style folder in the brand color, built at build time. */
 export const LOGO_SVG: Readonly<Record<string, string>> = ${JSON.stringify(logos.svg)};
 
+export const TOPICS: readonly Topic[] = ${JSON.stringify(topics.topics)};
+
+/** Topic name -> a Material-style folder in the topic's color, built at build time. */
+export const TOPIC_SVG: Readonly<Record<string, string>> = ${JSON.stringify(topics.svg)};
+
 export const HAS_FILE_ICONS: boolean = ${String(withFileIcons)};
 
 export const SOURCES = {
 	materialIconTheme: ${JSON.stringify(material.version)},
 	simpleIcons: ${JSON.stringify(logos.version)},
+	materialDesignIcons: ${JSON.stringify(topics.version)},
 } as const;
 `;
 
@@ -306,9 +489,11 @@ const licenses = path.join(repoRoot, 'licenses');
 mkdirSync(licenses, { recursive: true });
 writeFileSync(path.join(licenses, 'material-icon-theme-LICENSE.txt'), material.license);
 writeFileSync(path.join(licenses, 'simple-icons-LICENSE.md'), logos.license);
+writeFileSync(path.join(licenses, 'material-design-icons-LICENSE.txt'), topics.license);
 
 const kb = (n: number) => `${(n / 1024).toFixed(0)} KB`;
 console.log(
 	`build-icons: ${material.table.folderIcons.length} folder icons, ${logos.logos.length} logos, ` +
+		`${topics.topics.length} topics, ` +
 		`file icons ${withFileIcons ? 'on' : 'off'} -> src/generated/icons.ts (${kb(source.length)})`,
 );

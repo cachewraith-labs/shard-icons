@@ -4,34 +4,28 @@
 // it. The precedence rules (chosen icon, then the theme's guess, then nothing) are the part
 // worth testing, and they need neither Obsidian nor a document.
 
-import type { FolderIcon } from '../icons/icons';
-import { parseFolderIcon } from '../icons/icons';
-import {
-	DEFAULT_FILE_ICON,
-	DEFAULT_FOLDER_ICON,
-	fileIconName,
-	folderIconByName,
-	isFileIcon,
-} from '../icons/material';
+import type { Icon } from '../icons/icons';
+import { parseIcon } from '../icons/icons';
+import { DEFAULT_FILE_ICON, DEFAULT_FOLDER_ICON, fileIconName, folderIconByName } from '../icons/material';
 import type { ShardIconsSettings } from '../settings/types';
 import type { IconAssignments } from '../store/assignments';
 import { assignmentFor, basename } from '../store/assignments';
 
-export type IconPlan =
-	{ key: string; kind: 'folder'; icon: FolderIcon } | { key: string; kind: 'material'; name: string };
-
-function folderPlan(icon: FolderIcon | null): IconPlan | null {
-	return icon ? { key: `folder:${icon.id}`, kind: 'folder', icon } : null;
+export interface IconPlan {
+	key: string;
+	icon: Icon;
 }
 
-function materialPlan(name: string | null): IconPlan | null {
-	return name ? { key: `material:${name}`, kind: 'material', name } : null;
+function plan(id: string | null): IconPlan | null {
+	const icon = id ? parseIcon(id) : null;
+	return icon ? { key: `icon:${icon.id}`, icon } : null;
 }
 
 /**
- * A chosen icon wins; otherwise the theme's guess from the folder name, when that is on.
- * An id this build cannot draw still shows the plain folder, so the choice stays visible
- * (and the stored id stays untouched) after a downgrade or a sync from a newer version.
+ * A chosen icon wins — a folder, a logo or a file icon; otherwise the theme's guess from the
+ * name, when that is on. An id this build cannot draw still shows the plain folder, so the
+ * choice stays visible (and the stored id stays untouched) after a downgrade or a sync from a
+ * newer version.
  */
 export function planForFolder(
 	path: string,
@@ -40,12 +34,9 @@ export function planForFolder(
 	light: boolean,
 ): IconPlan | null {
 	const chosen = assignmentFor(icons, path);
-	if (chosen !== null) {
-		return folderPlan(parseFolderIcon(chosen) ?? parseFolderIcon(DEFAULT_FOLDER_ICON));
-	}
+	if (chosen !== null) return plan(chosen) ?? plan(DEFAULT_FOLDER_ICON);
 	if (!settings.autoFolderIcons) return null;
-	const byName = folderIconByName(basename(path), light);
-	return byName ? folderPlan(parseFolderIcon(byName)) : null;
+	return plan(folderIconByName(basename(path), light));
 }
 
 /**
@@ -60,7 +51,7 @@ export function planForFile(
 	light: boolean,
 ): IconPlan | null {
 	const chosen = assignmentFor(icons, path);
-	if (chosen !== null) return materialPlan(isFileIcon(chosen) ? chosen : DEFAULT_FILE_ICON || null);
+	if (chosen !== null) return plan(chosen) ?? plan(DEFAULT_FILE_ICON);
 	if (!settings.fileIcons) return null;
-	return materialPlan(fileIconName(basename(path), light) || null);
+	return plan(fileIconName(basename(path), light));
 }

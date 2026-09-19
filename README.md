@@ -2,20 +2,23 @@
 
 Folder and file icons for the Obsidian file explorer, in the style of VS Code's Material Icon Theme.
 
-Right-click any folder → **Change icon…**, and pick from two sets:
+Right-click any folder or file → **Change icon…**, and pick from four sets:
 
-| Tab         | Examples                         | What it is                                                          |
-| ----------- | -------------------------------- | ------------------------------------------------------------------- |
-| **Folders** | src, docs, tasks, server, …      | 285 of the Material Icon Theme's own folder icons                   |
-| **Logos**   | FastAPI, Kafka, Jira, Grafana, … | 355 folders in a brand's color with the Simple Icons logo as emblem |
+| Tab         | Examples                                | What it is                                                          |
+| ----------- | --------------------------------------- | ------------------------------------------------------------------- |
+| **Folders** | src, docs, tasks, server, …             | 285 of the Material Icon Theme's own folder icons                   |
+| **Topics**  | education, work, money, travel, …       | 197 everyday folders in a topic's color, from Material Design Icons |
+| **Logos**   | FastAPI, Kafka, Jira, Counter-Strike, … | 406 folders in a brand's color with the Simple Icons logo as emblem |
+| **Files**   | TypeScript, Python, Minecraft, …        | 586 of the Material Icon Theme's file icons                         |
 
-Right-click a file → **Change icon…** to pick from the theme's 586 file icons (TypeScript,
-Python, Markdown, …) for that one file.
+Every set works on both: a file can wear a folder icon or a logo, and a folder a file icon —
+the theme's Minecraft grass block, say. The picker opens on Folders for a folder and on Files
+for a file.
 
 Folders you have not touched can be matched automatically: `src`, `docs`, `images`, `.github`,
-`task`, `workers` and a few thousand other names get the icon the theme would give them. Files
-can do the same, by name and extension, if you turn that on. An icon you chose yourself always
-wins.
+`task`, `workers`, `minecraft`, `education`, `work`, `money`, `travel` and a few thousand other names get the icon the theme would give
+them. Files can do the same, by name and extension, if you turn that on. An icon you chose
+yourself always wins.
 
 ## Install
 
@@ -84,6 +87,8 @@ This plugin is MIT (see [`LICENSE`](LICENSE)). The icons it bundles are not:
 - **Material Icon Theme** — MIT, © Philipp Kief and contributors.
   [`licenses/material-icon-theme-LICENSE.txt`](licenses/material-icon-theme-LICENSE.txt)
 - **Simple Icons** — CC0-1.0. [`licenses/simple-icons-LICENSE.md`](licenses/simple-icons-LICENSE.md)
+- **Material Design Icons** — Apache-2.0, by Pictogrammers.
+  [`licenses/material-design-icons-LICENSE.txt`](licenses/material-design-icons-LICENSE.txt)
 
 Brand logos are trademarks of their respective owners; the CC0 waiver covers the icon files,
 not the marks. See [`licenses/`](licenses/) for the full notices.

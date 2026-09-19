@@ -7,16 +7,17 @@
 
 import type { App } from 'obsidian';
 import { Modal, setIcon } from 'obsidian';
-import type { IconChoice } from '../icons/icons';
+import type { Icon } from '../icons/icons';
 import { iconMatches, searchTerms } from '../icons/icons';
+import { renderIcon } from '../icons/render';
 import { basename } from '../store/assignments';
 import type { IconCatalog, PickerTab } from './catalogs';
 
-export class IconPickerModal<T extends IconChoice> extends Modal {
+export class IconPickerModal extends Modal {
 	private query = '';
-	private tab: PickerTab<T>;
+	private tab: PickerTab;
 	private active = 0;
-	private matches: readonly T[] = [];
+	private matches: readonly Icon[] = [];
 
 	private searchEl!: HTMLInputElement;
 	private gridEl!: HTMLElement;
@@ -26,7 +27,7 @@ export class IconPickerModal<T extends IconChoice> extends Modal {
 
 	constructor(
 		app: App,
-		private readonly catalog: IconCatalog<T>,
+		private readonly catalog: IconCatalog,
 		private readonly path: string,
 		private readonly current: string | null,
 		private readonly onChoose: (icon: string | null) => void,
@@ -96,7 +97,7 @@ export class IconPickerModal<T extends IconChoice> extends Modal {
 		this.contentEl.empty();
 	}
 
-	private selectTab(tab: PickerTab<T>, tabs: HTMLElement): void {
+	private selectTab(tab: PickerTab, tabs: HTMLElement): void {
 		this.tab = tab;
 		this.active = 0;
 		for (const [index, button] of Array.from(tabs.children).entries()) {
@@ -109,7 +110,7 @@ export class IconPickerModal<T extends IconChoice> extends Modal {
 	}
 
 	/** The icon the theme would pick for this name comes first. */
-	private computeMatches(): readonly T[] {
+	private computeMatches(): readonly Icon[] {
 		const terms = searchTerms(this.query);
 		const matches = this.tab.icons.filter((icon) => iconMatches(icon, terms));
 		const suggested = matches.find((icon) => icon.id === this.suggested);
@@ -133,7 +134,7 @@ export class IconPickerModal<T extends IconChoice> extends Modal {
 				cls: 'shard-picker-cell',
 				attr: { type: 'button', role: 'option', title: icon.label, tabindex: '-1' },
 			});
-			this.catalog.render(cell.createDiv({ cls: 'shard-picker-cell-icon' }), icon);
+			renderIcon(cell.createDiv({ cls: 'shard-picker-cell-icon' }), icon);
 			cell.createDiv({ cls: 'shard-picker-cell-label', text: icon.label });
 			if (icon.id === this.current) {
 				cell.addClass('is-selected');

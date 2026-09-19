@@ -6,3 +6,4 @@ package-lock.json
 # Vendored verbatim from node_modules by scripts/build-icons.ts; never reformat a license.
 licenses/material-icon-theme-LICENSE.txt
 licenses/simple-icons-LICENSE.md
+licenses/material-design-icons-LICENSE.txt

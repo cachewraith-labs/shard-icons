@@ -5,8 +5,8 @@
 // cloned — never assigned to `innerHTML` — so nothing from `data.json` can reach the DOM as
 // markup (OWASP A05).
 
-import { LOGO_SVG } from '../generated/icons';
-import type { FolderIcon } from './icons';
+import { LOGO_SVG, TOPIC_SVG } from '../generated/icons';
+import type { Icon } from './icons';
 import { iconSvg } from './material';
 
 /** Icon name -> parsed `<svg>`, cloned per use. Parsing ~300 icons for the picker is not free. */
@@ -30,18 +30,21 @@ function materialSvg(name: string): SVGElement | null {
 	return parsed.get(name)?.cloneNode(true) as SVGElement | null;
 }
 
-function logoSvg(slug: string, markup: string): SVGElement | null {
-	const key = `logo-${slug}`;
-	if (!parsed.has(key)) parsed.set(key, parseSvg(markup));
-	return parsed.get(key)?.cloneNode(true) as SVGElement | null;
+/** A folder built at build time — a logo or a topic — cached under its id. */
+function prebuiltSvg(id: string, markup: string): SVGElement | null {
+	if (!parsed.has(id)) parsed.set(id, parseSvg(markup));
+	return parsed.get(id)?.cloneNode(true) as SVGElement | null;
 }
 
-function buildFolderIcon(icon: FolderIcon): SVGElement | null {
+function buildIcon(icon: Icon): SVGElement | null {
 	switch (icon.kind) {
-		case 'theme':
+		case 'folder':
+		case 'file':
 			return materialSvg(icon.name);
 		case 'logo':
-			return logoSvg(icon.slug, LOGO_SVG[icon.slug] ?? '');
+			return prebuiltSvg(icon.id, LOGO_SVG[icon.slug] ?? '');
+		case 'topic':
+			return prebuiltSvg(icon.id, TOPIC_SVG[icon.name] ?? '');
 	}
 }
 
@@ -53,13 +56,8 @@ function place(target: HTMLElement, svg: SVGElement | null): boolean {
 }
 
 /** Replaces `target`'s contents with the icon. `false` means this build cannot draw it. */
-export function renderFolderIcon(target: HTMLElement, icon: FolderIcon): boolean {
-	return place(target, buildFolderIcon(icon));
-}
-
-/** Renders a Material Icon Theme icon by name — how file icons are drawn. */
-export function renderMaterialIcon(target: HTMLElement, name: string): boolean {
-	return place(target, materialSvg(name));
+export function renderIcon(target: HTMLElement, icon: Icon): boolean {
+	return place(target, buildIcon(icon));
 }
 
 /** Frees the parsed-SVG cache when the plugin unloads. */

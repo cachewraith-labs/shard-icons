@@ -1,19 +1,21 @@
-// The picker's folder tabs, built once from the generated table.
+// The picker's tabs, built once from the generated table.
 //
 // Split from `icons.ts` so the parser stays cheap to import: building these arrays walks every
-// folder icon and logo, which only the picker needs.
+// folder icon, logo, topic and file icon, which only the picker needs.
 
-import { LOGOS } from '../generated/icons';
-import type { FolderIcon, FolderIconGroup } from './icons';
-import { parseFolderIcon } from './icons';
-import { FOLDER_ICONS } from './material';
+import { LOGOS, TOPICS } from '../generated/icons';
+import type { Icon, IconGroup } from './icons';
+import { parseIcon } from './icons';
+import { FILE_ICONS, FOLDER_ICONS } from './material';
 
-function parseAll(ids: readonly string[]): readonly FolderIcon[] {
-	return ids.map(parseFolderIcon).filter((icon): icon is FolderIcon => icon !== null);
+function parseAll(ids: readonly string[]): readonly Icon[] {
+	return ids.map(parseIcon).filter((icon): icon is Icon => icon !== null);
 }
 
-/** Every choice for the picker, by tab, in display order. */
-export const FOLDER_ICON_GROUPS: Record<FolderIconGroup, readonly FolderIcon[]> = {
-	theme: parseAll(FOLDER_ICONS),
+/** Every choice for the picker, by tab, in display order. `file` is empty without file icons. */
+export const ICON_GROUPS: Record<IconGroup, readonly Icon[]> = {
+	folder: parseAll(FOLDER_ICONS),
 	logo: parseAll(LOGOS.map((logo) => `logo-${logo.slug}`)),
+	topic: parseAll(TOPICS.map((topic) => `topic-${topic.name}`)),
+	file: parseAll(FILE_ICONS),
 };

@@ -88,8 +88,9 @@ export class ShardIconsSettingTab extends PluginSettingTab {
 		containerEl.createEl('p', {
 			cls: 'shard-settings-credit',
 			text:
-				`Icons from Material Icon Theme ${SOURCES.materialIconTheme} (MIT) ` +
-				`and Simple Icons ${SOURCES.simpleIcons} (CC0-1.0).`,
+				`Icons from Material Icon Theme ${SOURCES.materialIconTheme} (MIT), ` +
+				`Simple Icons ${SOURCES.simpleIcons} (CC0-1.0) ` +
+				`and Material Design Icons ${SOURCES.materialDesignIcons} (Apache-2.0).`,
 		});
 	}
 }

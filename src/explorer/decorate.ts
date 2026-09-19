@@ -4,7 +4,7 @@
 // renderer does. Explorer rows are recycled as the list scrolls, so every pass has to be safe
 // to repeat and must do nothing when the row already shows the right icon.
 
-import { renderFolderIcon, renderMaterialIcon } from '../icons/render';
+import { renderIcon } from '../icons/render';
 import type { ShardIconsSettings } from '../settings/types';
 import type { IconAssignments } from '../store/assignments';
 import type { IconPlan } from './resolve';
@@ -57,8 +57,7 @@ export function decorateTitle(title: HTMLElement, context: DecorationContext): v
 	}
 
 	const target = host ?? createHost(title);
-	const drawn =
-		plan.kind === 'folder' ? renderFolderIcon(target, plan.icon) : renderMaterialIcon(target, plan.name);
+	const drawn = renderIcon(target, plan.icon);
 	if (drawn) target.setAttribute(KEY_ATTR, plan.key);
 	else target.remove();
 	title.classList.toggle(DECORATED_CLASS, drawn);

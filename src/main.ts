@@ -6,9 +6,7 @@ import type { Menu, TAbstractFile } from 'obsidian';
 import { Plugin, TFile, TFolder } from 'obsidian';
 import type { DecorationContext } from './explorer/decorate';
 import { FileExplorerIcons } from './explorer/FileExplorerIcons';
-import { FILE_ICONS } from './icons/material';
 import { clearIconCache } from './icons/render';
-import type { IconChoice } from './icons/icons';
 import type { IconCatalog } from './picker/catalogs';
 import { FILE_CATALOG, FOLDER_CATALOG } from './picker/catalogs';
 import { IconPickerModal } from './picker/IconPickerModal';
@@ -93,10 +91,10 @@ export default class ShardIconsPlugin extends Plugin {
 		document.body.style.setProperty(SIZE_VARIABLE, `${this.store.settings.iconSize}px`);
 	}
 
-	/** `null` when there is nothing to offer: a build without file icons, or the vault root. */
-	private catalogFor(file: TAbstractFile): IconCatalog<IconChoice> | null {
+	/** `null` for the vault root, which has no row in the explorer to show an icon on. */
+	private catalogFor(file: TAbstractFile): IconCatalog | null {
 		if (file instanceof TFolder) return file.isRoot() ? null : FOLDER_CATALOG;
-		if (file instanceof TFile) return FILE_ICONS.length > 0 ? FILE_CATALOG : null;
+		if (file instanceof TFile) return FILE_CATALOG;
 		return null;
 	}
 

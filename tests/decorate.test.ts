@@ -60,7 +60,7 @@ describe('decorateTitle', () => {
 		decorateTitle(row, context({ icons: { src: 'logo-rust' } }));
 		expect(row.querySelectorAll('.shard-icon')).toHaveLength(1);
 		expect(row.querySelector('.shard-icon')).toBe(host);
-		expect(host?.getAttribute('data-shard-icon')).toBe('folder:logo-rust');
+		expect(host?.getAttribute('data-shard-icon')).toBe('icon:logo-rust');
 	});
 
 	it('removes the icon when nothing should be shown any more', () => {
@@ -89,7 +89,7 @@ describe('decorateTitle', () => {
 	it('shows a plain folder for a symbol icon from an earlier version', () => {
 		const row = folderRow('Games');
 		decorateTitle(row, context({ icons: { Games: 'symbol-game' } }));
-		expect(row.querySelector('.shard-icon')?.getAttribute('data-shard-icon')).toBe('folder:folder');
+		expect(row.querySelector('.shard-icon')?.getAttribute('data-shard-icon')).toBe('icon:folder');
 	});
 
 	it('never puts markup from the store into the DOM', () => {
@@ -97,7 +97,7 @@ describe('decorateTitle', () => {
 		decorateTitle(row, context({ icons: { Evil: '<img src=x onerror=alert(1)>' } }));
 		// An unknown id falls back to the plain folder; nothing from data.json is parsed.
 		expect(row.querySelector('img')).toBeNull();
-		expect(row.querySelector('.shard-icon')?.getAttribute('data-shard-icon')).toBe('folder:folder');
+		expect(row.querySelector('.shard-icon')?.getAttribute('data-shard-icon')).toBe('icon:folder');
 	});
 });
 
@@ -119,8 +119,24 @@ describe('file rows', () => {
 		decorateTitle(row, context());
 		expect(row.querySelector('.shard-icon')).toBeNull();
 		decorateTitle(row, context({ icons: { 'Notes/todo.md': 'docker' } }));
-		expect(row.querySelector('.shard-icon')?.getAttribute('data-shard-icon')).toBe('material:docker');
+		expect(row.querySelector('.shard-icon')?.getAttribute('data-shard-icon')).toBe('icon:docker');
 		expect(row.classList.contains('shard-has-icon')).toBe(true);
+	});
+
+	it('draws a topic folder for a folder named Education', () => {
+		const row = folderRow('Education');
+		decorateTitle(row, context());
+		expect(row.querySelector('.shard-icon')?.getAttribute('data-shard-icon')).toBe('icon:topic-school');
+		expect(row.querySelector('.shard-icon svg path')).not.toBeNull();
+	});
+
+	it('draws a logo chosen for a file', () => {
+		const row = fileRow('Notes/servers.md');
+		decorateTitle(row, context({ icons: { 'Notes/servers.md': 'logo-pterodactyl' } }));
+		expect(row.querySelector('.shard-icon')?.getAttribute('data-shard-icon')).toBe(
+			'icon:logo-pterodactyl',
+		);
+		expect(row.querySelector('.shard-icon svg')).not.toBeNull();
 	});
 });
 

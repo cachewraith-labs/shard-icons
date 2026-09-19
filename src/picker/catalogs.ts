@@ -1,73 +1,60 @@
 // What the picker offers for a folder and for a file.
 //
 // Pattern: a Strategy spelled as plain data. The modal is the same for both — search, tabs,
-// grid, reset — and only these differ: which tabs, which icon the theme would suggest for the
-// name, and how a cell is drawn. A folder/file flag inside the modal would scatter that
-// across it instead.
+// grid, reset — and so are the icons on offer; only these differ: which tab comes first, which
+// icon the theme would suggest for the name, and which icon is the plain fallback. A
+// folder/file flag inside the modal would scatter that across it instead.
 
-import { FOLDER_ICON_GROUPS } from '../icons/groups';
-import type { FolderIcon, FolderIconGroup, IconChoice } from '../icons/icons';
-import { folderIconGroup } from '../icons/icons';
-import {
-	DEFAULT_FILE_ICON,
-	DEFAULT_FOLDER_ICON,
-	FILE_ICONS,
-	fileIconLabel,
-	fileIconName,
-	folderIconByName,
-} from '../icons/material';
-import { renderFolderIcon, renderMaterialIcon } from '../icons/render';
+import { ICON_GROUPS } from '../icons/groups';
+import type { Icon, IconGroup } from '../icons/icons';
+import { iconGroup } from '../icons/icons';
+import { DEFAULT_FILE_ICON, DEFAULT_FOLDER_ICON, fileIconName, folderIconByName } from '../icons/material';
 
-export interface PickerTab<T extends IconChoice> {
-	readonly id: string;
+export interface PickerTab {
+	readonly id: IconGroup;
 	readonly label: string;
 	readonly hint: string;
-	readonly icons: readonly T[];
+	readonly icons: readonly Icon[];
 }
 
-export interface IconCatalog<T extends IconChoice> {
+export interface IconCatalog {
 	/** What the dialog calls the thing it is choosing for, in labels. */
 	readonly noun: string;
-	readonly tabs: readonly PickerTab<T>[];
+	readonly tabs: readonly PickerTab[];
 	/** The tab that holds `id`, so the dialog opens where the current choice is. */
-	tabOf(id: string): string;
+	tabOf(id: string): IconGroup;
 	/** The icon the theme would give this name on its own; badged and listed first. */
 	suggest(name: string): string | null;
 	/** The theme's fallback, which is not worth a "match" badge. */
 	readonly fallback: string;
-	/**
-	 * Method syntax on purpose: it lets a folder catalog stand in as an `IconCatalog<IconChoice>`.
-	 * Sound here, since the dialog only ever hands back icons from this catalog's own tabs.
-	 */
-	render(target: HTMLElement, icon: T): boolean;
 }
 
-const FOLDER_TABS: { group: FolderIconGroup; label: string; hint: string }[] = [
-	{ group: 'theme', label: 'Folders', hint: 'src, images, music…' },
-	{ group: 'logo', label: 'Logos', hint: 'fastapi, laravel, godot…' },
-];
-
-export const FOLDER_CATALOG: IconCatalog<FolderIcon> = {
-	noun: 'Folder',
-	tabs: FOLDER_TABS.map(({ group, label, hint }) => ({
-		id: group,
-		label,
-		hint,
-		icons: FOLDER_ICON_GROUPS[group],
-	})),
-	tabOf: folderIconGroup,
-	suggest: (name) => folderIconByName(name),
-	fallback: DEFAULT_FOLDER_ICON,
-	render: renderFolderIcon,
+const TAB_TEXT: Record<IconGroup, { label: string; hint: string }> = {
+	folder: { label: 'Folders', hint: 'src, images, music…' },
+	logo: { label: 'Logos', hint: 'fastapi, kafka, godot…' },
+	topic: { label: 'Topics', hint: 'education, work, money, travel…' },
+	file: { label: 'Files', hint: 'typescript, python, minecraft…' },
 };
 
-const FILE_CHOICES: readonly IconChoice[] = FILE_ICONS.map((id) => ({ id, label: fileIconLabel(id) }));
+/** Tabs in this order, leaving out any that are empty — files, in a build without them. */
+function tabs(order: readonly IconGroup[]): readonly PickerTab[] {
+	return order
+		.map((id) => ({ id, ...TAB_TEXT[id], icons: ICON_GROUPS[id] }))
+		.filter((tab) => tab.icons.length > 0);
+}
 
-export const FILE_CATALOG: IconCatalog<IconChoice> = {
+export const FOLDER_CATALOG: IconCatalog = {
+	noun: 'Folder',
+	tabs: tabs(['folder', 'topic', 'logo', 'file']),
+	tabOf: iconGroup,
+	suggest: (name) => folderIconByName(name),
+	fallback: DEFAULT_FOLDER_ICON,
+};
+
+export const FILE_CATALOG: IconCatalog = {
 	noun: 'File',
-	tabs: [{ id: 'file', label: 'Files', hint: 'typescript, python, markdown…', icons: FILE_CHOICES }],
-	tabOf: () => 'file',
+	tabs: tabs(['file', 'folder', 'topic', 'logo']),
+	tabOf: iconGroup,
 	suggest: (name) => fileIconName(name) || null,
 	fallback: DEFAULT_FILE_ICON,
-	render: (target, icon) => renderMaterialIcon(target, icon.id),
 };

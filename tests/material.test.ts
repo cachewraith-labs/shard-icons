@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { parseIcon } from '../src/icons/icons';
 import {
 	DEFAULT_FOLDER_ICON,
 	EXTRA_FOLDER_NAMES,
@@ -44,11 +45,15 @@ describe('material icon resolution', () => {
 		expect(folderIconByName('Task')).toBe('folder-tasks');
 		expect(folderIconByName('tasks')).toBe('folder-tasks');
 		expect(folderIconByName('Workers')).toBe('folder-job');
+		expect(folderIconByName('Education')).toBe('topic-school');
+		expect(folderIconByName('Work')).toBe('topic-briefcase');
 		// The theme's own answer stands.
 		expect(folderIconByName('Service')).toBe('folder-controller');
+		expect(folderIconByName('Music')).toBe('folder-audio');
 		for (const [name, icon] of Object.entries(EXTRA_FOLDER_NAMES)) {
-			expect(isFolderIcon(icon), `${name} -> ${icon}`).toBe(true);
-			expect(folderIconByName(name)).toBe(icon);
+			// An entry the theme already matches would never be reached.
+			expect(folderIconByName(name), `${name} is shadowed by the theme`).toBe(icon);
+			expect(parseIcon(icon), `${name} -> ${icon}`).not.toBeNull();
 		}
 	});
 
