@@ -122,15 +122,27 @@ rules be tested directly.
 
 ### Releases
 
-`npm version <x.y.z>` bumps `package.json`, `manifest.json` and `versions.json` together. Push
-the tag — **no `v` prefix**, that is what Obsidian expects — and
-[`release.yml`](.github/workflows/release.yml) runs lint, tests and the build, then publishes a
-GitHub release with `main.js`, `manifest.json` and `styles.css` attached. That release is what
-Obsidian's updater and BRAT read.
+`npm version <x.y.z>` bumps `package.json`, then the `version` script copies that into
+`manifest.json` and records the minimum Obsidian version in `versions.json`, and npm commits
+and tags the three together. The tag is the **bare version with no `v` prefix** — that is what
+Obsidian expects, and `.npmrc` sets `tag-version-prefix=""` so npm does not add one.
 
 ```bash
 npm version 0.2.0
 git push --follow-tags
+```
+
+Pushing that tag runs [`release.yml`](.github/workflows/release.yml): lint, tests, build, a
+check that the tag matches `manifest.json`, then a GitHub release with `main.js`,
+`manifest.json` and `styles.css` attached. That release is what Obsidian's updater and BRAT
+read.
+
+The very first release is the exception — `package.json` already says `0.1.0`, and `npm
+version` refuses to set the version it is already on, so tag it by hand:
+
+```bash
+git tag 0.1.0
+git push origin 0.1.0
 ```
 
 [`update-icons.yml`](.github/workflows/update-icons.yml) bumps the two icon packages weekly,
