@@ -1,7 +1,7 @@
 {
   "id": "shard-icons",
   "name": "Shard Icons",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "minAppVersion": "1.5.0",
   "description": "Give folders an icon from the Material Icon Theme, a brand logo or a symbol, right from the file explorer.",
   "author": "cachewraith",
