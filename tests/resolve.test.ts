@@ -35,14 +35,35 @@ describe('planForFolder', () => {
 
 describe('planForFile', () => {
 	it('is off unless the setting is on', () => {
-		expect(planForFile('Notes/main.rs', settings, false)).toBeNull();
+		expect(planForFile('Notes/main.rs', {}, settings, false)).toBeNull();
 	});
 
 	it('uses the theme name and extension rules', () => {
-		expect(planForFile('Notes/main.rs', withFiles, false)).toMatchObject({
+		expect(planForFile('Notes/main.rs', {}, withFiles, false)).toMatchObject({
 			kind: 'material',
 			name: 'rust',
 		});
-		expect(planForFile('Notes/note.md', withFiles, false)).toMatchObject({ kind: 'material' });
+		expect(planForFile('Notes/note.md', {}, withFiles, false)).toMatchObject({ kind: 'material' });
+	});
+
+	it('prefers a chosen icon over the name match', () => {
+		expect(planForFile('Notes/main.rs', { 'Notes/main.rs': 'python' }, withFiles, false)).toMatchObject({
+			kind: 'material',
+			name: 'python',
+		});
+	});
+
+	it('honours a chosen icon even with automatic file icons off', () => {
+		expect(planForFile('todo.md', { 'todo.md': 'docker' }, settings, false)).toMatchObject({
+			key: 'material:docker',
+		});
+	});
+
+	it('shows the generic file icon for an id it cannot draw, instead of nothing', () => {
+		for (const id of ['from-the-future', 'folder-src']) {
+			expect(planForFile('todo.md', { 'todo.md': id }, settings, false)).toMatchObject({
+				key: 'material:file',
+			});
+		}
 	});
 });

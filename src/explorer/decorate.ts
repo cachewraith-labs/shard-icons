@@ -25,7 +25,7 @@ export interface DecorationContext {
 function planFor(title: HTMLElement, path: string, context: DecorationContext): IconPlan | null {
 	return title.classList.contains('nav-folder-title')
 		? planForFolder(path, context.icons, context.settings, context.light)
-		: planForFile(path, context.settings, context.light);
+		: planForFile(path, context.icons, context.settings, context.light);
 }
 
 function existingHost(title: HTMLElement): HTMLElement | null {

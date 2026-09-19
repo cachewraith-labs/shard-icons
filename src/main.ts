@@ -3,10 +3,14 @@
 // without Obsidian.
 
 import type { Menu, TAbstractFile } from 'obsidian';
-import { Plugin, TFolder } from 'obsidian';
+import { Plugin, TFile, TFolder } from 'obsidian';
 import type { DecorationContext } from './explorer/decorate';
 import { FileExplorerIcons } from './explorer/FileExplorerIcons';
+import { FILE_ICONS } from './icons/material';
 import { clearIconCache } from './icons/render';
+import type { IconChoice } from './icons/icons';
+import type { IconCatalog } from './picker/catalogs';
+import { FILE_CATALOG, FOLDER_CATALOG } from './picker/catalogs';
 import { IconPickerModal } from './picker/IconPickerModal';
 import { ShardIconsSettingTab } from './settings/SettingsTab';
 import { IconStore } from './store/IconStore';
@@ -39,7 +43,18 @@ export default class ShardIconsPlugin extends Plugin {
 				const folder = this.app.workspace.getActiveFile()?.parent;
 				// The vault root has no row in the explorer, so an icon on it would be invisible.
 				if (!folder || folder.isRoot()) return false;
-				if (!checking) this.openPicker(folder.path);
+				if (!checking) this.openPicker(folder);
+				return true;
+			},
+		});
+
+		this.addCommand({
+			id: 'change-file-icon',
+			name: 'Change icon of the active file',
+			checkCallback: (checking) => {
+				const file = this.app.workspace.getActiveFile();
+				if (!file || this.catalogFor(file) === null) return false;
+				if (!checking) this.openPicker(file);
 				return true;
 			},
 		});
@@ -78,13 +93,20 @@ export default class ShardIconsPlugin extends Plugin {
 		document.body.style.setProperty(SIZE_VARIABLE, `${this.store.settings.iconSize}px`);
 	}
 
+	/** `null` when there is nothing to offer: a build without file icons, or the vault root. */
+	private catalogFor(file: TAbstractFile): IconCatalog<IconChoice> | null {
+		if (file instanceof TFolder) return file.isRoot() ? null : FOLDER_CATALOG;
+		if (file instanceof TFile) return FILE_ICONS.length > 0 ? FILE_CATALOG : null;
+		return null;
+	}
+
 	private addMenuItems(menu: Menu, file: TAbstractFile): void {
-		if (!(file instanceof TFolder)) return;
+		if (this.catalogFor(file) === null) return;
 		menu.addItem((item) =>
 			item
 				.setTitle('Change icon…')
 				.setIcon('image')
-				.onClick(() => this.openPicker(file.path)),
+				.onClick(() => this.openPicker(file)),
 		);
 		if (this.store.iconFor(file.path) !== null) {
 			menu.addItem((item) =>
@@ -96,8 +118,11 @@ export default class ShardIconsPlugin extends Plugin {
 		}
 	}
 
-	private openPicker(path: string): void {
-		new IconPickerModal(this.app, path, this.store.iconFor(path), (icon) => {
+	private openPicker(file: TAbstractFile): void {
+		const catalog = this.catalogFor(file);
+		if (!catalog) return;
+		const { path } = file;
+		new IconPickerModal(this.app, catalog, path, this.store.iconFor(path), (icon) => {
 			void this.store.setIcon(path, icon);
 		}).open();
 	}

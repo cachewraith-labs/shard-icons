@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { FOLDER_ICON_GROUPS } from '../src/icons/groups';
 import {
 	folderIconGroup,
-	folderIconMatches,
+	iconMatches,
 	isKnownFolderIcon,
 	parseFolderIcon,
 	searchTerms,
@@ -52,10 +52,10 @@ describe('custom folder icons', () => {
 
 	it('matches on label and id', () => {
 		const fastapi = parseFolderIcon('logo-fastapi');
-		expect(fastapi && folderIconMatches(fastapi, ['fast'])).toBe(true);
-		expect(fastapi && folderIconMatches(fastapi, ['logo-fast'])).toBe(true);
-		expect(fastapi && folderIconMatches(fastapi, ['laravel'])).toBe(false);
-		expect(fastapi && folderIconMatches(fastapi, [])).toBe(true);
+		expect(fastapi && iconMatches(fastapi, ['fast'])).toBe(true);
+		expect(fastapi && iconMatches(fastapi, ['logo-fast'])).toBe(true);
+		expect(fastapi && iconMatches(fastapi, ['laravel'])).toBe(false);
+		expect(fastapi && iconMatches(fastapi, [])).toBe(true);
 		expect(searchTerms('  Fast  API ')).toEqual(['fast', 'api']);
 	});
 });

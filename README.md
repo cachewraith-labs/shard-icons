@@ -1,6 +1,6 @@
 # Shard Icons
 
-Folder icons for the Obsidian file explorer, in the style of VS Code's Material Icon Theme.
+Folder and file icons for the Obsidian file explorer, in the style of VS Code's Material Icon Theme.
 
 Right-click any folder → **Change icon…**, and pick from three sets:
 
@@ -10,9 +10,12 @@ Right-click any folder → **Change icon…**, and pick from three sets:
 | **Logos**   | `logo-fastapi`, `logo-godotengine`, … | A folder in the brand color with the Simple Icons logo as its emblem |
 | **Symbols** | `symbol-game`, `symbol-money`, …      | A folder with a Lucide glyph, using the icons Obsidian already ships |
 
+Right-click a file → **Change icon…** to pick any of the theme's file icons (`typescript`,
+`python`, `markdown`, …) for that one file.
+
 Folders you have not touched can be matched automatically: `src`, `docs`, `images`, `.github`
 and a few thousand other names get the icon the theme would give them. Files can do the same,
-by name and extension, if you turn that on.
+by name and extension, if you turn that on; an icon you chose yourself always wins.
 
 The ids are the same ones [cachewraith-explorer](https://github.com/cachewraith-labs/cachewraith-explorer)
 stores, so a folder looks the same in both.
@@ -40,15 +43,15 @@ Once the plugin is accepted, _Settings → Community plugins → Browse → Shar
 
 ## Using it
 
-- **Change an icon** — right-click a folder in the file explorer → _Change icon…_. Search, or
+- **Change an icon** — right-click a folder or file in the file explorer → _Change icon…_. Search, or
   switch tabs with the mouse; the arrow keys move through the grid, <kbd>Enter</kbd> picks and
-  <kbd>Esc</kbd> closes. The icon the theme would have guessed from the folder name is shown
+  <kbd>Esc</kbd> closes. The icon the theme would have guessed from the name is shown
   first, badged `match`.
-- **Reset one folder** — right-click → _Reset icon to default_, or _Reset to default_ in the
+- **Reset one folder or file** — right-click → _Reset icon to default_, or _Reset to default_ in the
   dialog.
-- **From the keyboard** — the command _Change icon of the active file's folder_ opens the same
-  dialog for whatever note you are in.
-- **Renaming and moving** keeps icons, including every subfolder's. Deleting a folder drops
+- **From the keyboard** — the commands _Change icon of the active file_ and _Change icon of the
+  active file's folder_ open the same dialog for whatever note you are in.
+- **Renaming and moving** keeps icons, including everything inside a folder. Deleting drops
   them.
 
 ### Settings
@@ -56,7 +59,7 @@ Once the plugin is accepted, _Settings → Community plugins → Browse → Shar
 | Setting                | Default | What it does                                                |
 | ---------------------- | ------- | ----------------------------------------------------------- |
 | Automatic folder icons | on      | Folders with no chosen icon get one matched from their name |
-| File icons             | off     | Files get an icon from their name and extension             |
+| File icons             | off     | Files with no chosen icon get one from name and extension   |
 | Icon size              | 16 px   | Between 12 and 28                                           |
 | Clear all custom icons | —       | Asks first; cannot be undone                                |
 
@@ -65,7 +68,7 @@ Everything lives in `.obsidian/plugins/shard-icons/data.json`: your settings and
 collects nothing.
 
 An icon id this version does not recognise — from a newer release, or from a vault synced the
-other way — draws a plain folder and is **kept**, not deleted.
+other way — draws a plain folder or file and is **kept**, not deleted.
 
 ## Development
 

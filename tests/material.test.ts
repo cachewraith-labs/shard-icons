@@ -2,11 +2,14 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	DEFAULT_FOLDER_ICON,
+	FILE_ICONS,
+	fileIconLabel,
 	FOLDER_ICONS,
 	fileIconName,
 	folderIconByName,
 	folderIconLabel,
 	iconSvg,
+	isFileIcon,
 	isFolderIcon,
 } from '../src/icons/material';
 
@@ -58,5 +61,30 @@ describe('material icon resolution', () => {
 		expect(folderIconLabel('folder-node')).toBe('node');
 		expect(folderIconLabel('folder-github-actions')).toBe('github actions');
 		expect(folderIconLabel('folder')).toBe('folder');
+	});
+});
+
+describe('file icon choices', () => {
+	it('offers every drawable file icon once, and no folders or light substitutes', () => {
+		expect(FILE_ICONS.length).toBeGreaterThan(100);
+		expect(new Set(FILE_ICONS).size).toBe(FILE_ICONS.length);
+		expect(FILE_ICONS).toContain('file');
+		expect(FILE_ICONS).toContain('typescript');
+		for (const id of FILE_ICONS) {
+			expect(isFileIcon(id)).toBe(true);
+			expect(id.endsWith('_light')).toBe(false);
+		}
+	});
+
+	it('refuses folders and unknown ids', () => {
+		expect(isFileIcon('folder-src')).toBe(false);
+		expect(isFileIcon('not-an-icon')).toBe(false);
+		for (const id of ['toString', 'constructor', '__proto__', 'hasOwnProperty']) {
+			expect(isFileIcon(id)).toBe(false);
+		}
+	});
+
+	it('labels ids for the picker', () => {
+		expect(fileIconLabel('typescript-def')).toBe('typescript def');
 	});
 });

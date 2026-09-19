@@ -107,6 +107,29 @@ describe('decorateTitle', () => {
 	});
 });
 
+describe('file rows', () => {
+	function fileRow(path: string): HTMLElement {
+		document.body.innerHTML = '';
+		const row = document.createElement('div');
+		row.className = 'nav-file-title';
+		row.setAttribute('data-path', path);
+		const content = document.createElement('div');
+		content.className = 'nav-file-title-content';
+		row.appendChild(content);
+		document.body.appendChild(row);
+		return row;
+	}
+
+	it('draws a chosen file icon with automatic file icons off', () => {
+		const row = fileRow('Notes/todo.md');
+		decorateTitle(row, context());
+		expect(row.querySelector('.shard-icon')).toBeNull();
+		decorateTitle(row, context({ icons: { 'Notes/todo.md': 'docker' } }));
+		expect(row.querySelector('.shard-icon')?.getAttribute('data-shard-icon')).toBe('material:docker');
+		expect(row.classList.contains('shard-has-icon')).toBe(true);
+	});
+});
+
 describe('decorateTree / undecorateTree', () => {
 	it('decorates every row under a node and takes them all back', () => {
 		document.body.innerHTML = '';

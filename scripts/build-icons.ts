@@ -133,6 +133,10 @@ function buildMaterial() {
 		shipped.add(manifest.file);
 		for (const map of maps) for (const name of Object.values(map)) shipped.add(name);
 	}
+	// Same rule as folders: `_light` file icons are substitutes, not separate choices.
+	const fileIcons = withFileIcons
+		? [...shipped].filter((n) => !isFolder(n) && !n.endsWith('_light')).sort()
+		: [];
 
 	// Several icon names can point at one file (`latex` -> `latex.clone.svg`); store the SVG
 	// once and remember the non-obvious names.
@@ -158,6 +162,7 @@ function buildMaterial() {
 			folderNames: manifest.light.folderNames ?? empty,
 		},
 		folderIcons,
+		fileIcons,
 		aliases,
 	};
 
@@ -212,6 +217,8 @@ export interface MaterialTable {
 	};
 	/** Every folder icon offered in the picker, sorted. */
 	readonly folderIcons: readonly string[];
+	/** Every file icon offered in the picker, sorted; empty when file icons are not built in. */
+	readonly fileIcons: readonly string[];
 	/** Icon name -> SVG key, only where they differ. */
 	readonly aliases: Readonly<Record<string, string>>;
 }

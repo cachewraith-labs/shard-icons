@@ -54,8 +54,14 @@ export function folderIconGroup(id: string): FolderIconGroup {
 	return 'theme';
 }
 
+/** Anything a picker can offer: a stored id and the name shown under it. */
+export interface IconChoice {
+	readonly id: string;
+	readonly label: string;
+}
+
 /** Search text: the label plus the id, so `fastapi`, `FastAPI` and `logo-fastapi` all match. */
-export function folderIconMatches(icon: FolderIcon, terms: readonly string[]): boolean {
+export function iconMatches(icon: IconChoice, terms: readonly string[]): boolean {
 	const haystack = `${icon.label} ${icon.id}`.toLowerCase();
 	return terms.every((term) => haystack.includes(term));
 }

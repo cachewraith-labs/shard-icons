@@ -6,7 +6,13 @@
 
 import type { FolderIcon } from '../icons/icons';
 import { parseFolderIcon } from '../icons/icons';
-import { DEFAULT_FOLDER_ICON, fileIconName, folderIconByName } from '../icons/material';
+import {
+	DEFAULT_FILE_ICON,
+	DEFAULT_FOLDER_ICON,
+	fileIconName,
+	folderIconByName,
+	isFileIcon,
+} from '../icons/material';
 import type { ShardIconsSettings } from '../settings/types';
 import type { IconAssignments } from '../store/assignments';
 import { assignmentFor, basename } from '../store/assignments';
@@ -42,8 +48,19 @@ export function planForFolder(
 	return byName ? folderPlan(parseFolderIcon(byName)) : null;
 }
 
-/** Files are never assigned an icon by hand; they follow the theme's name and extension rules. */
-export function planForFile(path: string, settings: ShardIconsSettings, light: boolean): IconPlan | null {
+/**
+ * The same precedence as folders: a chosen icon wins, even with automatic file icons off;
+ * otherwise the theme's guess from the name and extension. An id this build cannot draw shows
+ * the generic file icon, so the choice stays visible.
+ */
+export function planForFile(
+	path: string,
+	icons: IconAssignments,
+	settings: ShardIconsSettings,
+	light: boolean,
+): IconPlan | null {
+	const chosen = assignmentFor(icons, path);
+	if (chosen !== null) return materialPlan(isFileIcon(chosen) ? chosen : DEFAULT_FILE_ICON || null);
 	if (!settings.fileIcons) return null;
 	return materialPlan(fileIconName(basename(path), light) || null);
 }

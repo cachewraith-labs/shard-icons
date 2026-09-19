@@ -37,7 +37,7 @@ export class ShardIconsSettingTab extends PluginSettingTab {
 
 		const fileIcons = new Setting(containerEl)
 			.setName('File icons')
-			.setDesc('Give files an icon from their name and extension.')
+			.setDesc('Files with no chosen icon get an icon matched from their name and extension.')
 			.addToggle((toggle) =>
 				toggle
 					.setValue(store.settings.fileIcons)
@@ -57,12 +57,13 @@ export class ShardIconsSettingTab extends PluginSettingTab {
 			);
 
 		const count = Object.keys(store.icons).length;
+		const items = count === 1 ? '1 file or folder' : `${count} files and folders`;
 		new Setting(containerEl)
 			.setName('Clear all custom icons')
 			.setDesc(
 				count === 0
-					? 'No folders have a custom icon.'
-					: `${count} folder${count === 1 ? '' : 's'} have a custom icon.`,
+					? 'No file or folder has a custom icon.'
+					: `${items} ${count === 1 ? 'has' : 'have'} a custom icon.`,
 			)
 			.addButton((button) =>
 				button
@@ -73,7 +74,7 @@ export class ShardIconsSettingTab extends PluginSettingTab {
 						new ConfirmModal(
 							this.app,
 							'Clear all custom icons',
-							`This removes the icon chosen for ${count} folder${count === 1 ? '' : 's'}. It cannot be undone.`,
+							`This removes the icon chosen for ${items}. It cannot be undone.`,
 							'Clear',
 							() => {
 								void store.clearIcons();

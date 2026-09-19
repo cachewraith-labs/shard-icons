@@ -33,12 +33,22 @@ export function folderIconByName(folderName: string, light = false): string | nu
 
 export const DEFAULT_FOLDER_ICON = MATERIAL.folder;
 
+/** The generic file icon; empty in a build without file icons. */
+export const DEFAULT_FILE_ICON = MATERIAL.file;
+
 /** Every folder icon, sorted, for the picker. */
 export const FOLDER_ICONS: readonly string[] = MATERIAL.folderIcons;
 
-/** The markup for an icon name, following aliases; `null` for anything not built in. */
+/** Every file icon, sorted, for the picker; empty in a build without file icons. */
+export const FILE_ICONS: readonly string[] = MATERIAL.fileIcons;
+
+/**
+ * The markup for an icon name, following aliases; `null` for anything not built in. Own
+ * properties only: a stored id such as `toString` must not resolve to an inherited member.
+ */
 export function iconSvg(name: string): string | null {
-	return ICON_SVG[MATERIAL.aliases[name] ?? name] ?? null;
+	const key = Object.hasOwn(MATERIAL.aliases, name) ? (MATERIAL.aliases[name] ?? name) : name;
+	return Object.hasOwn(ICON_SVG, key) ? (ICON_SVG[key] ?? null) : null;
 }
 
 /**
@@ -52,4 +62,17 @@ export function isFolderIcon(name: string): boolean {
 /** `folder-node` -> `node`, for labels. */
 export function folderIconLabel(icon: string): string {
 	return icon === DEFAULT_FOLDER_ICON ? 'folder' : icon.replace(/^folder-/, '').replaceAll('-', ' ');
+}
+
+/**
+ * A file icon this build can draw — any non-folder icon with markup, `_light` substitutes
+ * included, so an id stored by a build with file icons still resolves in one with them.
+ */
+export function isFileIcon(name: string): boolean {
+	return !name.startsWith('folder') && iconSvg(name) !== null;
+}
+
+/** `typescript-def` -> `typescript def`, for labels. */
+export function fileIconLabel(icon: string): string {
+	return icon.replaceAll('-', ' ');
 }
