@@ -8,14 +8,30 @@ body {
 
 /* --- File explorer ---------------------------------------------------------------------- */
 
+/* The icon takes the row's own icon slot — the gutter Obsidian gives `.tree-item-icon` (the
+   collapse chevron), which themes such as Border repaint as a folder or file outline — so it
+   replaces that icon instead of sitting beside it, and undecorated rows stay aligned. */
 .shard-icon {
+	position: absolute;
+	margin-inline-start: calc(-1 * var(--size-4-5));
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex: 0 0 auto;
 	width: var(--shard-icon-size);
 	height: var(--shard-icon-size);
-	margin-right: var(--size-4-1);
+}
+
+/* Hide whatever the theme draws in that slot on rows this plugin decorates. `!important`
+   because themes scope these rules under body classes and the view type, out-ranking any
+   selector a plugin can reasonably write. */
+.nav-folder-title.shard-has-icon > .collapse-icon {
+	display: none !important;
+}
+
+.nav-folder-title.shard-has-icon::before,
+.nav-file-title.shard-has-icon::before {
+	display: none !important;
 }
 
 .shard-icon-svg {

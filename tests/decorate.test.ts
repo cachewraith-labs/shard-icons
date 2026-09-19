@@ -71,6 +71,21 @@ describe('decorateTitle', () => {
 		expect(row.querySelector('.shard-icon')).toBeNull();
 	});
 
+	it('marks the row, so the stylesheet can hide the icon it replaces', () => {
+		const row = folderRow('src');
+		decorateTitle(row, context());
+		expect(row.classList.contains('shard-has-icon')).toBe(true);
+		decorateTitle(row, context({ settings: { ...DEFAULT_SETTINGS, autoFolderIcons: false } }));
+		expect(row.classList.contains('shard-has-icon')).toBe(false);
+	});
+
+	it('leaves an undecorated row unmarked', () => {
+		const row = folderRow('Notify');
+		decorateTitle(row, context());
+		expect(row.querySelector('.shard-icon')).toBeNull();
+		expect(row.classList.contains('shard-has-icon')).toBe(false);
+	});
+
 	it('draws a symbol folder from Obsidian’s Lucide icons', () => {
 		const row = folderRow('Games');
 		decorateTitle(row, context({ icons: { Games: 'symbol-game' } }));
@@ -100,6 +115,7 @@ describe('decorateTree / undecorateTree', () => {
 		expect(document.querySelectorAll('.shard-icon')).toHaveLength(3);
 		undecorateTree(document);
 		expect(document.querySelectorAll('.shard-icon')).toHaveLength(0);
+		expect(document.querySelectorAll('.shard-has-icon')).toHaveLength(0);
 	});
 });
 

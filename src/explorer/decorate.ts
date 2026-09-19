@@ -11,6 +11,8 @@ import type { IconPlan } from './resolve';
 import { planForFile, planForFolder } from './resolve';
 
 export const ICON_CLASS = 'shard-icon';
+/** Set on a row this plugin draws for, so the stylesheet can hide the icon it replaces. */
+export const DECORATED_CLASS = 'shard-has-icon';
 const KEY_ATTR = 'data-shard-icon';
 const TITLE_SELECTOR = '.nav-folder-title[data-path], .nav-file-title[data-path]';
 
@@ -46,15 +48,20 @@ export function decorateTitle(title: HTMLElement, context: DecorationContext): v
 
 	if (!plan) {
 		host?.remove();
+		title.classList.remove(DECORATED_CLASS);
 		return;
 	}
-	if (host?.getAttribute(KEY_ATTR) === plan.key) return;
+	if (host?.getAttribute(KEY_ATTR) === plan.key) {
+		title.classList.add(DECORATED_CLASS);
+		return;
+	}
 
 	const target = host ?? createHost(title);
 	const drawn =
 		plan.kind === 'folder' ? renderFolderIcon(target, plan.icon) : renderMaterialIcon(target, plan.name);
 	if (drawn) target.setAttribute(KEY_ATTR, plan.key);
 	else target.remove();
+	title.classList.toggle(DECORATED_CLASS, drawn);
 }
 
 /** Decorates every explorer row in `root`, and `root` itself when it is one. */
@@ -68,4 +75,7 @@ export function decorateTree(root: Element, context: DecorationContext): void {
 /** Takes back everything this plugin injected under `root`. */
 export function undecorateTree(root: ParentNode): void {
 	for (const host of Array.from(root.querySelectorAll(`.${ICON_CLASS}`))) host.remove();
+	for (const title of Array.from(root.querySelectorAll(`.${DECORATED_CLASS}`))) {
+		title.classList.remove(DECORATED_CLASS);
+	}
 }
