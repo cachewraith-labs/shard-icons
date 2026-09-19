@@ -1,0 +1,63 @@
+# New icons arrive by upgrading the two icon packages and rebuilding. This runs weekly, proves
+# the result still builds and passes, and opens a PR; nothing lands without review.
+
+name: Update icons
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+
+      - run: npm ci
+
+      # Exact versions only: the lockfile and package.json must keep pinning what shipped.
+      - name: Upgrade the icon packages
+        id: upgrade
+        run: |
+          npm install --save-exact --save-dev material-icon-theme@latest simple-icons@latest
+          {
+            echo "material=$(node -p "require('material-icon-theme/package.json').version")"
+            echo "simple=$(node -p "require('simple-icons/package.json').version")"
+          } >> "$GITHUB_OUTPUT"
+
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+      - name: Open a pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          branch: chore/update-icons
+          title: 'chore: update icon packages'
+          commit-message: |
+            chore: update icon packages
+
+            material-icon-theme ${{ steps.upgrade.outputs.material }}
+            simple-icons ${{ steps.upgrade.outputs.simple }}
+          body: |
+            Weekly icon refresh.
+
+            - material-icon-theme: `${{ steps.upgrade.outputs.material }}`
+            - simple-icons: `${{ steps.upgrade.outputs.simple }}`
+
+            Lint, tests and the production build all passed on this branch. The generated
+            icon table is rebuilt at build time and is not committed.
+          add-paths: |
+            package.json
+            package-lock.json
+            licenses/

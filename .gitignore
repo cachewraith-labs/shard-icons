@@ -1,0 +1,13 @@
+node_modules/
+
+# Build output
+main.js
+main.js.map
+src/generated/
+
+# Obsidian writes this into the plugin folder when the plugin runs from a vault
+data.json
+
+# Editors / OS
+.DS_Store
+*.tgz

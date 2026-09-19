@@ -1,0 +1,51 @@
+{
+  "name": "shard-icons",
+  "version": "0.1.0",
+  "description": "Folder and file icons for the Obsidian file explorer, in the Material Icon Theme style.",
+  "main": "main.js",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cachewraith-labs/shard-icons.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cachewraith-labs/shard-icons/issues"
+  },
+  "homepage": "https://github.com/cachewraith-labs/shard-icons#readme",
+  "keywords": [
+    "obsidian",
+    "obsidian-plugin",
+    "icons",
+    "file-explorer"
+  ],
+  "scripts": {
+    "icons": "node scripts/build-icons.ts",
+    "dev": "npm run icons && node esbuild.config.mjs",
+    "build": "npm run icons && tsc --noEmit && node esbuild.config.mjs production",
+    "typecheck": "npm run icons && tsc --noEmit",
+    "test": "npm run icons && vitest run",
+    "test:watch": "npm run icons && vitest",
+    "lint": "npm run icons && eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "version": "node scripts/version-bump.mjs && git add manifest.json versions.json"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@types/node": "26.6.2",
+    "esbuild": "0.28.2",
+    "eslint": "9.39.5",
+    "eslint-plugin-obsidianmd": "0.4.2",
+    "jsdom": "30.1.0",
+    "material-icon-theme": "5.38.1",
+    "obsidian": "1.13.1",
+    "prettier": "3.9.8",
+    "simple-icons": "16.31.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.70.0",
+    "vite": "8.3.0",
+    "vitest": "5.0.1"
+  }
+}

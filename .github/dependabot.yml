@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    versioning-strategy: increase
+    groups:
+      dev-dependencies:
+        patterns: ['*']
+    # The icon packages have their own workflow, which rebuilds and proves the bundle.
+    ignore:
+      - dependency-name: material-icon-theme
+      - dependency-name: simple-icons
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
