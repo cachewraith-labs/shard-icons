@@ -27,7 +27,10 @@ const outFile = path.join(repoRoot, 'src/generated/icons.ts');
 /** File icons roughly triple the bundle; `SHARD_ICONS_FILE_ICONS=0` builds without them. */
 const withFileIcons = process.env['SHARD_ICONS_FILE_ICONS'] !== '0';
 
-/** Brand logos to build folders for, grouped only to keep the list reviewable. */
+/**
+ * Brand logos to build folders for, grouped only to keep the list reviewable. Wordmark-only
+ * logos (Zoom, Splunk, Intel…) are left out: the letters are unreadable at explorer size.
+ */
 // prettier-ignore
 const SLUGS = [
 	// Web and backend frameworks
@@ -37,6 +40,7 @@ const SLUGS = [
 	'bootstrap', 'tailwindcss', 'sass', 'jquery', 'redux', 'zod', 'reactquery',
 	// Apps and mobile
 	'tauri', 'electron', 'flutter', 'ionic', 'capacitor', 'expo', 'android', 'androidstudio', 'apple', 'xcode',
+	'jetpackcompose',
 	// Languages and runtimes
 	'python', 'rust', 'go', 'php', 'ruby', 'openjdk', 'kotlin', 'swift', 'dart', 'dotnet', 'cplusplus', 'c',
 	'typescript', 'javascript', 'html5', 'css', 'nodedotjs', 'deno', 'bun', 'elixir', 'haskell', 'scala',
@@ -55,6 +59,54 @@ const SLUGS = [
 	'roblox', 'discord', 'telegram', 'youtube', 'spotify', 'twitch',
 	// Systems and hardware
 	'linux', 'archlinux', 'ubuntu', 'debian', 'fedora', 'raspberrypi', 'arduino', 'homeassistant',
+	// Messaging and queues
+	'apachekafka', 'rabbitmq', 'mqtt', 'apachepulsar', 'socketdotio',
+	// Monitoring and logging
+	'grafana', 'prometheus', 'elasticsearch', 'kibana', 'logstash', 'opentelemetry', 'jaeger', 'sentry',
+	'datadog', 'newrelic', 'elastic', 'influxdb', 'pagerduty', 'uptimekuma',
+	// Infrastructure and containers
+	'helm', 'argo', 'istio', 'envoyproxy', 'traefikproxy', 'consul', 'vault', 'hashicorp', 'podman', 'portainer',
+	'rancher', 'k3s', 'caddy', 'kong',
+	// Hosting and cloud
+	'digitalocean', 'hetzner', 'render', 'railway', 'flydotio', 'ovh',
+	// Databases and data pipelines
+	'apachecassandra', 'couchbase', 'neo4j', 'clickhouse', 'snowflake', 'duckdb', 'cockroachlabs', 'timescale',
+	'apachespark', 'apacheairflow', 'minio', 'typeorm', 'sequelize', 'drizzle', 'mongoose',
+	// APIs, auth and payments
+	'swagger', 'openapiinitiative', 'postman', 'insomnia', 'trpc', 'apollographql', 'hasura', 'keycloak',
+	'auth0', 'okta', 'stripe', 'paypal', 'mailgun', 'resend', 'clerk',
+	// Tasks, planning and docs
+	'jira', 'trello', 'asana', 'linear', 'clickup', 'todoist', 'basecamp', 'ticktick', 'things', 'confluence',
+	'miro', 'airtable', 'calendly', 'googlecalendar',
+	// Chat and email
+	'whatsapp', 'signal', 'gmail', 'zulip', 'mattermost', 'element', 'matrix',
+	// Editors and terminals
+	'cursor', 'zedindustries', 'sublimetext', 'gnuemacs', 'tmux', 'zsh', 'fishshell', 'iterm2', 'alacritty',
+	'wezterm', 'warp',
+	// CI, code hosting and security
+	'circleci', 'travisci', 'githubcopilot', 'gitea', 'forgejo', 'bitbucket', 'dependabot', 'snyk', 'codecov',
+	// Frontend libraries
+	'threedotjs', 'd3', 'chartdotjs', 'mui', 'chakraui', 'shadcnui', 'radixui', 'antdesign', 'framer',
+	'greensock', 'htmx', 'alpinedotjs', 'lit', 'preact', 'emberdotjs', 'backbonedotjs', 'vuetify', 'quasar',
+	// More languages
+	'fsharp', 'ocaml', 'erlang', 'gleam', 'crystal', 'v', 'fortran', 'assemblyscript', 'webassembly', 'solidity',
+	'odin',
+	// AI
+	'googlegemini', 'mistralai', 'langchain', 'perplexity', 'nvidia',
+	// Operating systems
+	'freebsd', 'nixos', 'alpinelinux', 'manjaro', 'linuxmint', 'gentoo', 'kalilinux', 'redhat',
+	'centos', 'opensuse', 'popos',
+	// Media, creative and social
+	'obsstudio', 'audacity', 'davinciresolve', 'krita', 'netflix', 'soundcloud', 'reddit', 'x', 'mastodon',
+	'bluesky', 'instagram', 'facebook', 'tiktok',
+	// Games
+	'riotgames', 'gogdotcom', 'battledotnet', 'ea', 'ubisoft',
+	// Hardware and home lab
+	'esphome', 'espressif', 'stmicroelectronics', 'qualcomm', 'proxmox', 'truenas',
+	'pihole', 'openwrt', 'tailscale', 'wireguard',
+	// Storage, passwords and notes
+	'googledrive', 'dropbox', 'nextcloud', 'bitwarden', '1password', 'keepassxc', 'zotero', 'anki', 'logseq',
+	'excalidraw',
 ];
 
 interface Manifest {

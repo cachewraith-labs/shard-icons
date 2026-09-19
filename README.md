@@ -101,7 +101,7 @@ brand-logo folders it draws itself from the theme's folder shape. That file is g
 source of truth, pinned in `package-lock.json`.
 
 `SHARD_ICONS_FILE_ICONS=0 npm run build` leaves the file icons out, which takes the bundle from
-about 1.2 MB down to roughly 0.6 MB, at the cost of the _File icons_ setting.
+about 1.5 MB down to roughly 0.9 MB, at the cost of the _File icons_ setting.
 
 ### Layout
 
