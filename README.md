@@ -4,21 +4,18 @@ Folder and file icons for the Obsidian file explorer, in the style of VS Code's 
 
 Right-click any folder → **Change icon…**, and pick from two sets:
 
-| Tab         | Ids                                   | What it is                                                           |
-| ----------- | ------------------------------------- | -------------------------------------------------------------------- |
-| **Folders** | `folder-src`, `folder-docs`, …        | The Material Icon Theme's own folder icons                           |
-| **Logos**   | `logo-fastapi`, `logo-godotengine`, … | A folder in the brand color with the Simple Icons logo as its emblem |
+| Tab         | Examples                         | What it is                                                          |
+| ----------- | -------------------------------- | ------------------------------------------------------------------- |
+| **Folders** | src, docs, tasks, server, …      | 285 of the Material Icon Theme's own folder icons                   |
+| **Logos**   | FastAPI, Kafka, Jira, Grafana, … | 355 folders in a brand's color with the Simple Icons logo as emblem |
 
-Right-click a file → **Change icon…** to pick any of the theme's file icons (`typescript`,
-`python`, `markdown`, …) for that one file.
+Right-click a file → **Change icon…** to pick from the theme's 586 file icons (TypeScript,
+Python, Markdown, …) for that one file.
 
-Folders you have not touched can be matched automatically: `src`, `docs`, `images`, `.github`
-and a few thousand other names get the icon the theme would give them, plus a handful the
-theme misses (`task`, `todo`, `workers`, `microservices`…) matched to its own icons. Files can
-do the same, by name and extension, if you turn that on; an icon you chose yourself always wins.
-
-The ids are the same ones [cachewraith-explorer](https://github.com/cachewraith-labs/cachewraith-explorer)
-stores, so a folder looks the same in both.
+Folders you have not touched can be matched automatically: `src`, `docs`, `images`, `.github`,
+`task`, `workers` and a few thousand other names get the icon the theme would give them. Files
+can do the same, by name and extension, if you turn that on. An icon you chose yourself always
+wins.
 
 ## Install
 
@@ -43,18 +40,20 @@ Once the plugin is accepted, _Settings → Community plugins → Browse → Shar
 
 ## Using it
 
-- **Change an icon** — right-click a folder or file in the file explorer → _Change icon…_. Search, or
-  switch tabs with the mouse; the arrow keys move through the grid, <kbd>Enter</kbd> picks and
-  <kbd>Esc</kbd> closes. The icon the theme would have guessed from the name is shown
-  first, badged `match`.
-- **Reset one folder or file** — right-click → _Reset icon to default_, or _Reset to default_ in the
-  dialog.
+- **Change an icon** — right-click a folder or file in the file explorer → _Change icon…_.
+  Search, or switch tabs with the mouse; the arrow keys move through the grid,
+  <kbd>Enter</kbd> picks and <kbd>Esc</kbd> closes. The icon the theme would have guessed from
+  the name is shown first, badged `match`.
+- **Reset one folder or file** — right-click → _Reset icon to default_, or _Reset to default_ in
+  the dialog.
 - **From the keyboard** — the commands _Change icon of the active file_ and _Change icon of the
   active file's folder_ open the same dialog for whatever note you are in.
 - **Renaming and moving** keeps icons, including everything inside a folder. Deleting drops
   them.
+- **Themes** — the icon takes the place of the folder or file icon your theme draws, rather than
+  sitting beside it.
 
-### Settings
+## Settings
 
 | Setting                | Default | What it does                                                |
 | ---------------------- | ------- | ----------------------------------------------------------- |
@@ -63,111 +62,20 @@ Once the plugin is accepted, _Settings → Community plugins → Browse → Shar
 | Icon size              | 16 px   | Between 12 and 28                                           |
 | Clear all custom icons | —       | Asks first; cannot be undone                                |
 
-Everything lives in `.obsidian/plugins/shard-icons/data.json`: your settings and a plain
-`path → icon id` map. Nothing else is stored, and the plugin makes no network requests and
+## Your data
+
+Everything lives in `.obsidian/plugins/shard-icons/data.json`: your settings and which folder
+or file has which icon. Nothing else is stored, and the plugin makes no network requests and
 collects nothing.
 
-An icon id this version does not recognise — from a newer release, from a vault synced the
-other way, or a `symbol-…` folder icon from before symbols were removed — draws a plain folder
-or file and is **kept**, not deleted.
+An icon this version does not recognise — from a newer release, from a vault synced the other
+way, or a symbol icon from before 0.4.0 — shows as a plain folder or file and is **kept**, not
+deleted.
 
-## Development
+## Contributing
 
-```bash
-npm install
-npm run dev      # rebuild main.js on change
-npm run build    # lint-clean production bundle
-npm test
-npm run lint
-npm run typecheck
-```
-
-To try it in a vault, symlink the repository into the vault's plugin folder:
-
-```bash
-ln -s "$PWD" "<your vault>/.obsidian/plugins/shard-icons"
-```
-
-Use a scratch vault rather than your real one: Obsidian writes `data.json` straight into this
-folder when the plugin runs.
-
-### How the icons get into the bundle
-
-An Obsidian plugin ships as one `main.js`, so there is no server to fetch SVGs from.
-`scripts/build-icons.ts` reads `material-icon-theme` and `simple-icons` out of `node_modules`
-and writes `src/generated/icons.ts`: the lookup table, the folder and file SVGs, and the
-brand-logo folders it draws itself from the theme's folder shape. That file is generated by
-`npm run build`, `npm run dev` and `npm test`, and is git-ignored — the icon packages are the
-source of truth, pinned in `package-lock.json`.
-
-`SHARD_ICONS_FILE_ICONS=0 npm run build` leaves the file icons out, which takes the bundle from
-about 1.5 MB down to roughly 0.9 MB, at the cost of the _File icons_ setting.
-
-### Layout
-
-```
-src/
-  main.ts        lifecycle, events and commands — wiring only
-  icons/         ids, the FolderIcon union, the theme's lookup rules, rendering
-  explorer/      deciding what each row shows, and putting it there
-  picker/        the modal
-  settings/      settings types, validation, the settings tab
-  store/         path → icon assignments, persisted through loadData/saveData
-  generated/     build output (git-ignored)
-scripts/build-icons.ts
-tests/           vitest, no Obsidian required
-```
-
-Everything except `icons/render.ts`, `explorer/FileExplorerIcons.ts`, `picker/`, `settings/
-SettingsTab.ts` and `store/IconStore.ts` is free of the Obsidian API, which is what lets the
-rules be tested directly.
-
-### Releases
-
-`npm version <x.y.z>` bumps `package.json`, then the `version` script copies that into
-`manifest.json` and records the minimum Obsidian version in `versions.json`, and npm commits
-and tags the three together. The tag is the **bare version with no `v` prefix** — that is what
-Obsidian expects, and `.npmrc` sets `tag-version-prefix=""` so npm does not add one.
-
-```bash
-npm version 0.2.0
-git push --follow-tags
-```
-
-Pushing that tag runs [`release.yml`](.github/workflows/release.yml): lint, tests, build, a
-check that the tag matches `manifest.json`, then a GitHub release with `main.js`,
-`manifest.json` and `styles.css` attached. That release is what Obsidian's updater and BRAT
-read.
-
-The very first release is the exception — `package.json` already says `0.1.0`, and `npm
-version` refuses to set the version it is already on, so tag it by hand:
-
-```bash
-git tag 0.1.0
-git push origin 0.1.0
-```
-
-[`update-icons.yml`](.github/workflows/update-icons.yml) bumps the two icon packages weekly,
-rebuilds, runs the tests and opens a PR, so new icons arrive on their own. Dependabot handles
-the rest of the toolchain.
-
-### Community plugin submission checklist
-
-- [x] `manifest.json` at the repository root with `id`, `name`, `version`, `minAppVersion`,
-      `description`, `author`, `isDesktopOnly`
-- [x] `id` (`shard-icons`) and `name` do not contain "Obsidian" or "plugin"
-- [x] `versions.json` maps each version to its minimum Obsidian version
-- [x] A GitHub release tagged with the bare version, with `main.js`, `manifest.json` and
-      `styles.css` as assets
-- [x] `LICENSE` at the repository root
-- [x] `main.js` and `src/generated/` are git-ignored, not committed
-- [x] No network requests, no telemetry, no bundled analytics
-- [x] Styling through Obsidian's CSS variables; no hard-coded colors outside the icon art
-- [x] `isDesktopOnly: false`, and no Node or Electron API in the shipped bundle
-- [x] Everything the plugin injects is removed in `onunload`
-- [ ] Submit the plugin at [community.obsidian.md](https://community.obsidian.md) — sign in,
-      link the GitHub account, add the repository. Submission is no longer a pull request to
-      `obsidianmd/obsidian-releases`; that repository has pull requests disabled.
+Building, testing and releasing are covered in [`docs/`](docs/):
+[development](docs/development.md) and [releasing](docs/releasing.md).
 
 ## Licenses
 
@@ -178,5 +86,4 @@ This plugin is MIT (see [`LICENSE`](LICENSE)). The icons it bundles are not:
 - **Simple Icons** — CC0-1.0. [`licenses/simple-icons-LICENSE.md`](licenses/simple-icons-LICENSE.md)
 
 Brand logos are trademarks of their respective owners; the CC0 waiver covers the icon files,
-not the marks. See [`licenses/`](licenses/) for the full notices, which the build copies from
-`node_modules` so they always match the versions in the bundle.
+not the marks. See [`licenses/`](licenses/) for the full notices.
