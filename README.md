@@ -163,9 +163,9 @@ the rest of the toolchain.
 - [x] Styling through Obsidian's CSS variables; no hard-coded colors outside the icon art
 - [x] `isDesktopOnly: false`, and no Node or Electron API in the shipped bundle
 - [x] Everything the plugin injects is removed in `onunload`
-- [ ] Add the plugin to
-      [obsidianmd/obsidian-releases](https://github.com/obsidianmd/obsidian-releases) via a PR
-      to `community-plugins.json`
+- [ ] Submit the plugin at [community.obsidian.md](https://community.obsidian.md) — sign in,
+      link the GitHub account, add the repository. Submission is no longer a pull request to
+      `obsidianmd/obsidian-releases`; that repository has pull requests disabled.
 
 ## Licenses
 
